@@ -5,7 +5,7 @@
 
 ### Abstract
 
-We will be using agent based modelling to model the behaviour of ant colonies. Specifically, how the individual ants work together and independently to achieve goals.
+We will be using agent-based modeling to simulate the behaviour of ant colonies (specifically, how the ants think and act individually, but end up working together to achieve goals). We plan to explore how simple rules can produce complex, emergent behavior.
 
 
 ### Annotated Bibliography
