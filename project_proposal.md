@@ -17,3 +17,5 @@ P.J. Deadman; "Modelling individual behaviour and group performance in an intell
 This paper investigates the use of agent-based modelling to simulate behaviour of agents sharing a common resource. In particular, the authors investigated the causes of "tragedy of the commons" situations, where the best thing for each individual agent leads to the downfall of the group as a whole.
 
 !(source)[http://www.sciencedirect.com/science/article/pii/S0301479799902724]
+
+!(source)[https://svn-d1.mpi-inf.mpg.de/AG1/MultiCoreLab/papers/scientificamericanSwarmIntelligence.pdf]
