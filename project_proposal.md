@@ -16,12 +16,12 @@ P.J. Deadman; "Modelling individual behaviour and group performance in an intell
 
 This paper investigates the use of agent-based modelling to simulate behaviour of agents sharing a common resource. In particular, the authors investigated the causes of "tragedy of the commons" situations, where the best thing for each individual agent leads to the downfall of the group as a whole.
 
-!(source)[http://www.sciencedirect.com/science/article/pii/S0301479799902724]
+[source](http://www.sciencedirect.com/science/article/pii/S0301479799902724)
 
 Eric Bonabeau, Marco Dorigo and Guy Theraulaz; "Swarm Intelligence: From Natural to Artificial Systems". New York, NY: Oxford University Press, Santa Fe Institute Studies in the Sciences of Complexity (1999), Paper: ISBN 0-19-513159-2.
 
-!(source)[http://dlia.ir/Scientific/e_book/Science/Cybernetics/006285.pdf]
+[source](http://dlia.ir/Scientific/e_book/Science/Cybernetics/006285.pdf)
 
 ????
 
-!(source)[https://svn-d1.mpi-inf.mpg.de/AG1/MultiCoreLab/papers/scientificamericanSwarmIntelligence.pdf]
+[source](https://svn-d1.mpi-inf.mpg.de/AG1/MultiCoreLab/papers/scientificamericanSwarmIntelligence.pdf)
