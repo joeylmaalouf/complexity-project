@@ -22,7 +22,7 @@ Eric Bonabeau, Marco Dorigo and Guy Theraulaz; "Swarm Intelligence: From Natural
 
 [source](http://dlia.ir/Scientific/e_book/Science/Cybernetics/006285.pdf)
 
-????
+Eric Bonabeau and Guy Theraulaz; "Swarm Smarts". Scientific American (2008)
 
 [source](https://svn-d1.mpi-inf.mpg.de/AG1/MultiCoreLab/papers/scientificamericanSwarmIntelligence.pdf)
 
