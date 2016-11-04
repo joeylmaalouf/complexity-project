@@ -1,6 +1,6 @@
-# Project Title
+# Evolutionary Ants
 
-##### Joey, Joe, Dan
+#### Dan, Joey, Joe
 
 
 ### Abstract
@@ -50,4 +50,4 @@ My goals for this project are to learn more about evolutionary algorithms, as we
 
 Joe:
 
-????
+I'd like to learn about both evolutionary models and emergent behavior, though one or the other would be fine. I'd also like to do something that's fun to talk about, since I will probably want to talk to a lot of people about it.
