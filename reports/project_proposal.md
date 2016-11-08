@@ -1,6 +1,6 @@
-# Project Title
+# Evolutionary Ants
 
-##### Joey, Joe, Dan
+#### Dan, Joey, Joe
 
 
 ### Abstract
@@ -22,7 +22,7 @@ Eric Bonabeau, Marco Dorigo and Guy Theraulaz; "Swarm Intelligence: From Natural
 
 [source](http://dlia.ir/Scientific/e_book/Science/Cybernetics/006285.pdf)
 
-????
+Eric Bonabeau and Guy Theraulaz; "Swarm Smarts". Scientific American (2008)
 
 [source](https://svn-d1.mpi-inf.mpg.de/AG1/MultiCoreLab/papers/scientificamericanSwarmIntelligence.pdf)
 
@@ -50,4 +50,4 @@ My goals for this project are to learn more about evolutionary algorithms, as we
 
 Joe:
 
-????
+I'd like to learn about both evolutionary models and emergent behavior, though one or the other would be fine. I'd also like to do something that's fun to talk about, since I will probably want to talk to a lot of people about it.
