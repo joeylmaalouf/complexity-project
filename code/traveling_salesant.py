@@ -3,28 +3,41 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 
-class TSA(object):
-  def __init__(self, cities):
-    self.cities = cities
-    self.graph = nx.Graph()
-    self.graph.add_nodes_from(cities.keys())
-    for city1 in self.graph:
-      for city2 in self.graph:
-        if city1 != city2:
-          self.graph.add_edge(city1, city2, length = distance(self.cities[city1], self.cities[city2]))
-
-  def draw(self):
-    nx.draw_networkx_nodes(self.graph, self.cities, alpha = 0.7)
-    nx.draw_networkx_edges(self.graph, self.cities, alpha = 0.3)
-    nx.draw_networkx_labels(self.graph, self.cities, alpha = 1.0)
-    plt.show()
-
-
 def distance(p1, p2):
   return sqrt((p2[1] - p1[1])**2 + (p2[0] - p1[0])**2)
 
+    
+class TravelGraph(nx.Graph):
+  def __init__(self, cities):
+    super(TravelGraph, self).__init__()
+    self.cities = cities
+    self.add_nodes_from(cities.keys())
+    for city1 in self.nodes():
+      for city2 in self.nodes():
+        if city1 != city2:
+          self.add_edge(city1, city2, length = distance(self.cities[city1], self.cities[city2]))
+    # for e in self.edges():
+      # print(e, self[e[0]][e[1]])
+
+  def draw(self):
+    nx.draw_networkx_nodes(self, self.cities, alpha = 0.7)
+    nx.draw_networkx_edges(self, self.cities, alpha = 0.3)
+    nx.draw_networkx_labels(self, self.cities, alpha = 1.0)
+    plt.show()
+
+
+class Ant(object):
+  def __init__(self, graph):
+    self.graph = graph
+    self.node = None
+
+  def travel(self):
+    pass
+
 
 if __name__ == "__main__":
+  num_ants = 100
+  num_iterations = 1000
   cities = {
     "SEATTLE":        (-122.3321, 47.6062),
     "SAN FRANCISCO":  (-122.4194, 37.7749),
@@ -42,5 +55,9 @@ if __name__ == "__main__":
     "NEW YORK":       (-074.0059, 40.7128),
     "BOSTON":         (-071.0589, 42.3601)
   }
-  t = TSA(cities)
-  t.draw()
+  tg = TravelGraph(cities)
+  tg.draw()
+  ants = [Ant(tg) for _ in range(num_ants)]
+  for _ in range(num_iterations):
+    for ant in ants:
+      ant.travel()
