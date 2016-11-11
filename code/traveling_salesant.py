@@ -1,6 +1,7 @@
 from math import sqrt
 import matplotlib.pyplot as plt
 import networkx as nx
+# import numpy as np
 
 
 def distance(p1, p2):
@@ -16,8 +17,9 @@ class TravelGraph(nx.Graph):
       for city2 in self.nodes():
         if city1 != city2:
           self.add_edge(city1, city2, length = distance(self.cities[city1], self.cities[city2]))
+    nx.set_edge_attributes(self, "pheromones", 0)
     # for e in self.edges():
-      # print(e, self[e[0]][e[1]])
+    #   print(e, self[e[0]][e[1]])
 
   def draw(self):
     nx.draw_networkx_nodes(self, self.cities, alpha = 0.7)
@@ -27,17 +29,31 @@ class TravelGraph(nx.Graph):
 
 
 class Ant(object):
-  def __init__(self, graph):
+  def __init__(self, graph, start):
     self.graph = graph
-    self.node = None
+    self.node = start
+    self.visited = [self.node]
+    self.traveled = 0
 
   def travel(self):
-    pass
+    if len(self.visited) > len(self.graph.cities):
+      return
+    elif len(self.visited) == len(self.graph.cities):
+      start = self.visited[0]
+      self.traveled += self.graph[self.node][start]["length"]
+      self.visited.append(start)
+      self.node = start
+    else:
+      choice = min(
+        (i for i in self.graph[self.node].items() if i[0] not in self.visited),
+        key = lambda x: x[1]["length"]
+      )
+      self.node = choice[0]
+      self.visited.append(self.node)
+      self.traveled += choice[1]["length"]
 
 
 if __name__ == "__main__":
-  num_ants = 100
-  num_iterations = 1000
   cities = {
     "SEATTLE":        (-122.3321, 47.6062),
     "SAN FRANCISCO":  (-122.4194, 37.7749),
@@ -55,9 +71,13 @@ if __name__ == "__main__":
     "NEW YORK":       (-074.0059, 40.7128),
     "BOSTON":         (-071.0589, 42.3601)
   }
+  num_ants = 1
+  num_iterations = 20
   tg = TravelGraph(cities)
-  tg.draw()
-  ants = [Ant(tg) for _ in range(num_ants)]
+  # tg.draw()
+  ants = [Ant(tg, "BOSTON") for _ in range(num_ants)]
   for _ in range(num_iterations):
     for ant in ants:
       ant.travel()
+  print(ants[0].visited)
+  print(ants[0].traveled)
