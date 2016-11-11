@@ -5,11 +5,13 @@ import networkx as nx
 
 
 def distance(p1, p2):
+  """ Calculate the distance between two points. """
   return sqrt((p2[1] - p1[1])**2 + (p2[0] - p1[0])**2)
 
     
 class TravelGraph(nx.Graph):
   def __init__(self, cities):
+    """ Initialize the graph with some custom attributes (length, pheromones). """
     super(TravelGraph, self).__init__()
     self.cities = cities
     self.add_nodes_from(cities.keys())
@@ -22,6 +24,7 @@ class TravelGraph(nx.Graph):
     #   print(e, self[e[0]][e[1]])
 
   def draw(self):
+    """ Draw the graph. """
     nx.draw_networkx_nodes(self, self.cities, alpha = 0.7)
     nx.draw_networkx_edges(self, self.cities, alpha = 0.3)
     nx.draw_networkx_labels(self, self.cities, alpha = 1.0)
@@ -30,27 +33,44 @@ class TravelGraph(nx.Graph):
 
 class Ant(object):
   def __init__(self, graph, start):
+    """ Initialize the ant agent on a graph to traverse. """
     self.graph = graph
     self.node = start
     self.visited = [self.node]
     self.traveled = 0
+    self.alive = True
 
   def travel(self):
-    if len(self.visited) > len(self.graph.cities):
-      return
-    elif len(self.visited) == len(self.graph.cities):
-      start = self.visited[0]
-      self.traveled += self.graph[self.node][start]["length"]
-      self.visited.append(start)
-      self.node = start
-    else:
-      choice = min(
-        (i for i in self.graph[self.node].items() if i[0] not in self.visited),
-        key = lambda x: x[1]["length"]
-      )
-      self.node = choice[0]
-      self.visited.append(self.node)
-      self.traveled += choice[1]["length"]
+    """ Choose a node to travel to, weighted via distance and pheromone trail. """
+    if ant.alive:
+      if len(self.visited) < len(self.graph.cities):
+        choice = min(
+          (i for i in self.graph[self.node].items() if i[0] not in self.visited), # change to factor in pheromones
+          key = lambda x: x[1]["length"]
+        )
+        self.visit(choice)
+      else:
+        self.finish()
+        self.spray()
+        self.alive = False
+
+  def visit(self, node):
+    """ Visit a given node. """
+    self.node = node[0]
+    self.visited.append(self.node)
+    self.traveled += node[1]["length"]
+
+  def finish(self):
+    """ Finish the path, traveling back to the starting node. """
+    start = self.visited[0]
+    self.traveled += self.graph[self.node][start]["length"]
+    self.visited.append(start)
+    self.node = start
+
+  def spray(self):
+    """ Leave a pheromone trail of strength inversely proportional to distance traveled. """
+    for i in range(len(self.visited) - 1):
+      self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += 1.0 / self.traveled
 
 
 if __name__ == "__main__":
