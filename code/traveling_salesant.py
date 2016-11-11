@@ -1,7 +1,7 @@
 from math import sqrt
 import matplotlib.pyplot as plt
 import networkx as nx
-# import numpy as np
+import numpy as np
 
 
 def distance(p1, p2):
@@ -21,7 +21,7 @@ class TravelGraph(nx.Graph):
           self.add_edge(city1, city2, length = distance(self.cities[city1], self.cities[city2]))
     nx.set_edge_attributes(self, "pheromones", 0)
     # for e in self.edges():
-    #   print(e, self[e[0]][e[1]])
+      # print(e, self[e[0]][e[1]])
 
   def draw(self):
     """ Draw the graph. """
@@ -38,21 +38,24 @@ class Ant(object):
     self.node = start
     self.visited = [self.node]
     self.traveled = 0
-    self.alive = True
+    self.dist_weight = 5.0
+    self.pher_weight = 10.0
 
   def travel(self):
-    """ Choose a node to travel to, weighted via distance and pheromone trail. """
-    if ant.alive:
-      if len(self.visited) < len(self.graph.cities):
-        choice = min(
-          (i for i in self.graph[self.node].items() if i[0] not in self.visited), # change to factor in pheromones
-          key = lambda x: x[1]["length"]
-        )
-        self.visit(choice)
-      else:
-        self.finish()
-        self.spray()
-        self.alive = False
+    """ Travel between nodes, making decisions based on distance and pheromone trail. """
+    while len(self.visited) < len(self.graph.cities):
+      choice = self.choose()
+      self.visit(choice)
+    self.finish()
+    self.spray()
+
+  def choose(self):
+    choices = [c for c in self.graph[self.node].items() if c[0] not in self.visited]
+    weights = [self.dist_weight / c[1]["length"] + c[1]["pheromones"] for c in choices]
+    total = sum(weights)
+    weights = [w * 1.0 / total for w in weights]
+    choice = np.random.choice(a = [c[0] for c in choices], p = weights)
+    return (choice, self.graph[self.node][choice])
 
   def visit(self, node):
     """ Visit a given node. """
@@ -70,7 +73,7 @@ class Ant(object):
   def spray(self):
     """ Leave a pheromone trail of strength inversely proportional to distance traveled. """
     for i in range(len(self.visited) - 1):
-      self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += 1.0 / self.traveled
+      self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += self.pher_weight / self.traveled
 
 
 if __name__ == "__main__":
@@ -91,13 +94,16 @@ if __name__ == "__main__":
     "NEW YORK":       (-074.0059, 40.7128),
     "BOSTON":         (-071.0589, 42.3601)
   }
-  num_ants = 1
-  num_iterations = 20
+  best = None
+  generations = 200
+  population = 100
   tg = TravelGraph(cities)
   # tg.draw()
-  ants = [Ant(tg, "BOSTON") for _ in range(num_ants)]
-  for _ in range(num_iterations):
+  for _ in range(generations):
+    ants = [Ant(tg, "BOSTON") for _ in range(population)]
     for ant in ants:
       ant.travel()
-  print(ants[0].visited)
-  print(ants[0].traveled)
+      if best is None or ant.traveled < best.traveled:
+        best = ant
+  print(best.visited)
+  print(best.traveled)
