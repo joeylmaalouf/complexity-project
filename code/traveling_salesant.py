@@ -21,26 +21,29 @@ class TravelGraph(nx.Graph):
           self.add_edge(city1, city2, length = distance(self.cities[city1], self.cities[city2]))
     nx.set_edge_attributes(self, "pheromones", 0)
 
-  def draw(self, path = None):
+  def draw(self, path = None, draw_nodes = True, draw_edges = True, draw_labels = True):
     """ Draw the graph, optionally highlighting a given path. """
-    nx.draw_networkx_nodes(
-      G = self,
-      pos = self.cities,
-      alpha = 0.5,
-      node_color = "k"
-    )
-    nx.draw_networkx_edges(
-      G = self,
-      pos = self.cities,
-      alpha = 0.25,
-      edge_color = "r"
-    )
-    nx.draw_networkx_labels(
-      G = self,
-      pos = {city: (pos[0], pos[1] + 1.5) for city, pos in self.cities.items()},
-      alpha = 1.0,
-      font_color = "k"
-    )
+    if draw_nodes:
+      nx.draw_networkx_nodes(
+        G = self,
+        pos = self.cities,
+        alpha = 0.5,
+        node_color = "k"
+      )
+    if draw_edges:
+      nx.draw_networkx_edges(
+        G = self,
+        pos = self.cities,
+        alpha = 0.25,
+        edge_color = "r"
+      )
+    if draw_labels:
+      nx.draw_networkx_labels(
+        G = self,
+        pos = {city: (pos[0], pos[1] + 1.5) for city, pos in self.cities.items()},
+        alpha = 1.0,
+        font_color = "k"
+      )
     if path:
       nx.draw_networkx_edges(
         G = self,
