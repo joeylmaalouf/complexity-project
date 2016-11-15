@@ -129,3 +129,5 @@ if __name__ == "__main__":
   print(best.visited)
   print(best.traveled)
   tg.draw(best.visited)
+  # ["BOSTON", "NEW YORK", "MIAMI", "ATLANTA", "HOUSTON", "OKLAHOMA CITY", "ALBUQUERQUE", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "INDIANAPOLIS", "BOSTON"]
+  # 139.970031227
