@@ -132,5 +132,8 @@ if __name__ == "__main__":
   print(best.visited)
   print(best.traveled)
   tg.draw(best.visited)
-  # ["BOSTON", "NEW YORK", "MIAMI", "ATLANTA", "HOUSTON", "OKLAHOMA CITY", "ALBUQUERQUE", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "INDIANAPOLIS", "BOSTON"]
-  # 139.970031227
+
+  # best result found:
+  # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight
+  # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
+  # traveled: 139.053186595
