@@ -37,6 +37,46 @@ A possible extension of this experiment would be to assign each agent a carrying
 
 Example of optimal path solution found by experiment. Pictured are food nodes with weighted edges. The weight is determined by the agents traversing the edge.
 
+See [`proposed_changes.md`](proposed_changes.md) for our ideas for further avenues of exploration.
+
+
+### Experimental Analysis
+
+##### Travelling Sales-ant
+
+Question: How can we find the shortest route across all nodes in a graph without re-visiting a node, making use of the ant-colony optimization technique?
+
+Methodology: We modeled the environment as a complete graph, and set the agents (ants) to start at one particular node. We gave them the ability to randomly choose a new (unvisited) node to travel to, weighted based on pheromone trails and travel distance. When an ant  makes it back to the start after visiting every node, a pheromone trail is laid down along its path, with strength inversely proportional to the distance traveled. This leads to optimization towards the least distance traveled, since those routes will have the strongest pheromones.
+
+Results: We were able to successfully find the same route presented in the paper whose experiment we replicated.
+
+Interpretation: This technique was able to get the results we wanted, even if it took a few tries to do so. It falls short compared to deterministic algorithms, which will always either find the answer or not; this sort of approach can find a good solution very quickly, but may not find the optimal solution for a long time.
+
+##### Decaying Travelling Sales-ant
+
+Question: What would happen if the pheromones in our TSA problem decayed over time?
+
+Methodology: We created a modified version of the experiment described above, where the pheromones decreased across iterations.
+
+Results: This solution was also able to find the optimal solution after a few trials, and it seemed to have a slightly easier time doing so, taking fewer iterations to reach the best route.
+
+Interpretation: This modification seems to positively impact our algorithm, since ants don't get misled by outdated paths, while the good paths are constantly refreshed.
+
+##### Shortest Path To Food
+
+Question: What is the shortest path between 2 nodes in a graph?
+
+Methodology: We modeled the environment as a single source node connected to many generic nodes, some of which were connected to a singular food node. Agents started at the source node and progressed along edges randomly with a bias for edges with pheromones, until they reached a food node. Upon finding food, ants returned to teh source, laying pheromones as they went. After many generations, the shortest path from the source node to the food node should have the most pheromones.
+
+Results: This algorithm was able to find the shortest path between the two nodes after several generations. Increasing the number of ants decreased the number of generations needed to solve the problem slightly.
+
+Interpretation: This algorithm is less efficient than something like Dijkstra's, but does provide an example of agent based modelling solving a traditional and well known problem. 
+
+
+### Future Experiments
+
+For our next experiment, we will be representing the environment as a 2D grid. This allows us to implement more complex behaviours such as random wandering, colony creation, and path intersection. For results, we may see the ants optimize the location of their colony for distance from food. The results will be interpreted from the final state of the simulation after a certain number of iterations.
+
 
 ### Learning Goals
 
