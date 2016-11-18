@@ -2,6 +2,8 @@ from math import sqrt
 from ant import Ant
 import networkx as nx
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 def dist(p1, p2):
   """ Calculate the distance between two points. """
@@ -28,10 +30,14 @@ def dist(p1, p2):
     baseEdgeWeight -> Int: base weight of each edge before additional weighting by pheromones. Lower = stronger pheromones
 '''
 class FoodTravelGraph(nx.Graph):
-  def __init__(self, emptyNodes, foodSources, antHills, baseEdgeWeight=5):
+  def __init__(self, emptyNodes, foodSources, antHills, baseEdgeWeight=1):
     super(FoodTravelGraph, self).__init__();
     self.ants = [];
+    self.frames = [];
     self.baseEdgeWeight = baseEdgeWeight;
+    self.emptyNodes = emptyNodes;
+    self.foodSources = foodSources;
+    self.antHills = antHills;
 
     for node in emptyNodes:
       self.add_node(node, pos=emptyNodes[node], isFood=False);
@@ -62,23 +68,36 @@ class FoodTravelGraph(nx.Graph):
     ToDo: this should factor in distance somehow.
   '''
   def step(self):
+    self.decayPheromones();
     for ant in self.ants:
       if (ant.foundFood):
         # if the ant is at home, drop the food
         if (ant.pos == ant.home):
           ant.foundFood = False;
+          ant.totalDistance = 0;
         # walking home
         else:
           dest = ant.visited[len(ant.visited) - 2]; # get previous node
-          self.edge[ant.pos][dest]["pheromones"] += ant.pheromoneStrength; # add pheromones to edge as we walk back
+          self.edge[ant.pos][dest]["pheromones"] += ant.getPheromones(); # add pheromones to edge as we walk back
 
           ant.pos = dest;
           del ant.visited[-1];
       else:
-        dest = self.choose(currNode=ant.pos, visited=ant.visited);
+        dest, dist = self.choose(currNode=ant.pos, visited=ant.visited);
+        ant.totalDistance += dist;
         ant.visit(dest);
         if (self.node[dest]["isFood"]):
           ant.foundFood = True;
+
+    self.saveFrame();
+
+  '''
+    Reduce amount of pheromones on each edge by fixed amount
+  '''
+  def decayPheromones(self):
+    for a, b in self.edges():
+      if self.edge[a][b]["pheromones"] > 0:
+        self.edge[a][b]["pheromones"] -= .01;
 
   '''
     Choose the next unvisited node to visit from the neighbors of currNode.
@@ -86,7 +105,8 @@ class FoodTravelGraph(nx.Graph):
     currNode -> String: name of node which ant is on
     visited -> List[String]: list of nodes which ant has visited
 
-    return -> String: name of node to visit
+    return -> String: name of node to visit,
+              Int: Distance between current node and destination
   '''
   def choose(self, currNode, visited):
     unvisitedNodes = {};
@@ -108,31 +128,60 @@ class FoodTravelGraph(nx.Graph):
     except ValueError:
       pass;
 
-    return choice
+    return choice, self.edge[currNode][choice]["length"];
 
+  ''' Save pheromone levels of graph. '''
+  def saveFrame(self):
+    self.frames.append([self.edge[edge[0]][edge[1]]["pheromones"] for edge in self.edges()]);
+
+  def draw(self):
+    fig, ax = plt.subplots();
+
+    for edge in self.edges():
+      x1, x2 = self.node[edge[0]]["pos"][0], self.node[edge[1]]["pos"][0];
+      y1, y2 = self.node[edge[0]]["pos"][1], self.node[edge[1]]["pos"][1];
+
+      p = self.edge[edge[0]][edge[1]]["pheromones"];
+      color = (0, 0, 0);
+      ax.add_artist(plt.Line2D([x1, x2], [y1, y2], color=color, label='foo'));
+      ax.annotate(int(p), xy=(x1 + (x2 - x1)/2, y1 + (y2 - y1)/2));
+
+    for node in self.antHills:
+      ax.add_artist(plt.Circle(self.antHills[node]["pos"], 0.1, color='red'));
+      
+    for node in self.emptyNodes:
+      ax.add_artist(plt.Circle(self.emptyNodes[node], 0.1, color='black'));
+
+    for node in self.foodSources:
+      ax.add_artist(plt.Circle(self.foodSources[node], 0.1, color='blue'));
+
+    plt.axis([-2, 7, -1, 6]);
+    plt.show();
 
 if __name__ == "__main__":
   emptyNodes = {
     1: (0, 0),
-    2: (3, 3),
+    2: (2, 3),
     3: (2, 5)
   };
 
   foodSources = {
-    "food1": (2, 2)
+    "food1": (4, 2)
   };
 
   antHills = {
-    "hill1": {"pos": (-1, -1), "ants": 10}
+    "hill1": {"pos": (-1, 3), "ants": 10}
   }
 
   graph = FoodTravelGraph(emptyNodes, foodSources, antHills);
 
-  for i in range(100):
+  for i in range(1000):
     graph.step();
 
-  print("NODES");
-  print(graph.nodes(data=True));
-  print("EDGES");
-  for edge in graph.edges(data=True):
-    print(edge)
+  graph.draw();
+
+  # print("NODES");
+  # print(graph.nodes(data=True));
+  # print("EDGES");
+  # for edge in graph.edges(data=True):
+  #   print(edge)
