@@ -1,3 +1,4 @@
+from itertools import izip, product
 from math import sqrt
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -56,14 +57,15 @@ class TravelGraph(nx.Graph):
 
 
 class Ant(object):
-  def __init__(self, graph, start):
+  def __init__(self, graph, start, dist_weight = 5, pher_weight = 10, generation = 0):
     """ Initialize the ant agent on a graph to traverse. """
     self.graph = graph
     self.node = start
     self.visited = [self.node]
     self.traveled = 0
-    self.dist_weight = 5.0
-    self.pher_weight = 10.0
+    self.dist_weight = float(dist_weight)
+    self.pher_weight = float(pher_weight)
+    self.generation = generation
 
   def travel(self):
     """ Travel between nodes until every one has been visited. """
@@ -101,7 +103,8 @@ class Ant(object):
       self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += self.pher_weight / self.traveled
 
 
-if __name__ == "__main__":
+def evaluate(generations, population, dist_weight, pher_weight):
+  """ Evaluate one instance of the algorithm. """
   cities = {
     "SEATTLE":        (-122.3321, 47.6062),
     "SAN FRANCISCO":  (-122.4194, 37.7749),
@@ -120,19 +123,38 @@ if __name__ == "__main__":
     "BOSTON":         (-071.0589, 42.3601)
   }
   best = None
-  generations = 1000
-  population = 1000
   tg = TravelGraph(cities)
-  for _ in range(generations):
-    ants = [Ant(tg, "BOSTON") for _ in range(population)]
+  for g in range(1, generations + 1):
+    ants = [Ant(tg, "BOSTON", dist_weight, pher_weight, g) for _ in range(population)]
     for ant in ants:
       ant.travel()
-      if best is None or ant.traveled < best.traveled:
+      if best is None or (ant.visited != best.visited and ant.traveled < best.traveled):
         best = ant
-  print(best.visited)
-  print(best.traveled)
-  tg.draw(best.visited)
+  # print(best.visited)
+  # print(best.traveled)
+  # tg.draw(best.visited)
+  return best
 
+
+def grid_search(hyperparam_ranges):
+  """ Find the best hyperparameter combination. """
+  runs = {}
+  for p in [dict(izip(hyperparam_ranges, r)) for r in product(*hyperparam_ranges.values())]:
+    print(p)
+    runs[tuple(p.values())] = evaluate(**p)
+  # sort primarily by score, secondarily by how many generations it takes to reach optimal solution?
+  return runs
+
+if __name__ == "__main__":
+  results = grid_search({
+    "generations": [100, 500, 1000, 1500, 2000],
+    "population": [100, 500, 1000, 1500, 2000],
+    "dist_weight": [1, 5, 10],
+    "pher_weight": [1, 5, 10]
+  })
+  results = sorted(results.items(), key = lambda x: (x[1].traveled, x[1].generation))
+  for r in results:
+    print(r[0], r[1].traveled, r[1].generation, r[1].visited)
   # best result found:
   # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight
   # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
