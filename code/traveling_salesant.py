@@ -103,7 +103,7 @@ class Ant(object):
       self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += self.pher_weight / self.traveled
 
 
-def evaluate(generations, population, dist_weight, pher_weight):
+def evaluate(generations, population, dist_weight, pher_weight, decay = False, decay_amount = 0.1):
   """ Evaluate one instance of the algorithm. """
   cities = {
     "SEATTLE":        (-122.3321, 47.6062),
@@ -125,13 +125,17 @@ def evaluate(generations, population, dist_weight, pher_weight):
   best = None
   tg = TravelGraph(cities)
   for g in range(1, generations + 1):
+    if decay:
+      for city1, city2 in tg.edges():
+        tg[city1][city2]["pheromones"] -= min(tg[city1][city2]["pheromones"], decay_amount)
     ants = [Ant(tg, "BOSTON", dist_weight, pher_weight, g) for _ in range(population)]
     for ant in ants:
       ant.travel()
       if best is None or (ant.visited != best.visited and ant.traveled < best.traveled):
         best = ant
-  # print(best.visited)
+  # print(best.generation)
   # print(best.traveled)
+  # print(best.visited)
   # tg.draw(best.visited)
   return best
 
@@ -142,7 +146,6 @@ def grid_search(hyperparam_ranges):
   for p in [dict(izip(hyperparam_ranges, r)) for r in product(*hyperparam_ranges.values())]:
     print(p)
     runs[tuple(p.values())] = evaluate(**p)
-  # sort primarily by score, secondarily by how many generations it takes to reach optimal solution?
   return runs
 
 if __name__ == "__main__":
@@ -154,8 +157,8 @@ if __name__ == "__main__":
   })
   results = sorted(results.items(), key = lambda x: (x[1].traveled, x[1].generation))
   for r in results:
-    print(r[0], r[1].traveled, r[1].generation, r[1].visited)
+    print(r[0], r[1].generation, r[1].traveled, r[1].visited)
   # best result found:
-  # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight
+  # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight, no decay
   # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
   # traveled: 139.053186595

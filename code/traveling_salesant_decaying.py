@@ -1,11 +1,7 @@
-from math import sqrt
-import matplotlib.pyplot as plt
-import networkx as nx
-import numpy as np
 from traveling_salesant import *
 
 class DecayingGraph(TravelGraph):
-  def step(self, decay_amount=0.1):
+  def step(self, decay_amount = 0.1):
     for city1, city2 in self.edges():
       self[city1][city2]["pheromones"] -= min(self[city1][city2]["pheromones"], decay_amount)
 
@@ -47,5 +43,4 @@ if __name__ == "__main__":
 Current best with this code:
 ['BOSTON', 'MIAMI', 'ATLANTA', 'HOUSTON', 'PHOENIX', 'LAS VEGAS', 'SAN DIEGO', 'LOS ANGELES', 'SAN FRANCISCO', 'SEATTLE', 'SALT LAKE CITY', 'ALBUQUERQUE', 'OKLAHOMA CITY', 'INDIANAPOLIS', 'NEW YORK', 'BOSTON']
 139.053186595
-
 '''
