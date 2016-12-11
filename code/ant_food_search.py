@@ -39,6 +39,8 @@ class FoodTravelGraph(nx.Graph):
     self.emptyNodes = emptyNodes;
     self.foodSources = foodSources;
     self.antHills = antHills;
+    self.pheromoneStrength = pheromoneStrength;
+    self.baseEdgeWeight = baseEdgeWeight;
     self.pheromoneDecayRate = pheromoneDecayRate;
 
     for node in emptyNodes:
@@ -65,9 +67,35 @@ class FoodTravelGraph(nx.Graph):
         for node2 in emptyNodes:
           self.add_edge(node, node2, pheromones=0, length=dist(emptyNodes[node2], emptyNodes[node]));
 
+  '''
+    Initialize and return new graph with same parameters.
+
+    Alternatively, parameters can be passed as overrides to the current parameters, producing a modified graph.
+  '''
+  def makeCopy(self, 
+    newPheromoneStrength=None, 
+    newBaseEdgeWeight=None, 
+    newPheromoneDecayRate=None):
+
+    if (newPheromoneStrength == None):
+      newPheromoneStrength = self.pheromoneStrength
+
+    if (newBaseEdgeWeight == None):
+      newBaseEdgeWeight = self.baseEdgeWeight;
+
+    if (newPheromoneDecayRate == None):
+      newPheromoneDecayRate = self.pheromoneDecayRate;
+
+    return FoodTravelGraph(
+      self.emptyNodes,
+      self.foodSources,
+      self.antHills,
+      pheromoneStrength = newPheromoneStrength,
+      baseEdgeWeight = newBaseEdgeWeight,
+      pheromoneDecayRate = newPheromoneDecayRate);
+
   ''' 
-    Every ant traverses to another node. 
-    ToDo: this should factor in distance somehow.
+    Every ant traverses to another node.
   '''
   def step(self):
     self.decayPheromones();
@@ -200,43 +228,23 @@ class FoodTravelGraph(nx.Graph):
     plt.axis([-2, 7, -1, 6]);
     plt.show();
 
-def Sweep():
-  for pheromoneDecayRate in range(1, 10):
-    for baseEdgeWeight in range(1, 10):
-      for pheromoneStrength in range(1, 10):
-        graph = FoodTravelGraph(
-          emptyNodes, 
-          foodSources, 
-          antHills, 
-          pheromoneStrength=pheromoneStrength, 
-          baseEdgeWeight=baseEdgeWeight, 
-          pheromoneDecayRate=(0.01 * pheromoneDecayRate));
+def sweep(graph):
+  for baseEdgeWeight in np.arange(0.5, 10.5, 0.5):
+    print(testDeterminism(graph.makeCopy(newBaseEdgeWeight=baseEdgeWeight, newPheromoneStrength=9))[5.23606797749979]/100.0);
 
-        for _ in range(1000):
-          graph.step();
-
-        print("Decay rate: " 
-          + str(.01* pheromoneDecayRate) 
-          + ". Base edge weight: "
-          + str(baseEdgeWeight)
-          + ". Pheromone strength: "
-          + str(pheromoneStrength)
-          + ". Path length: " 
-          + str(graph.getOptimalPath()["hill1"]));
-
-def testDeterminism(emptyNodes, foodSources, antHills, iterations=100, steps=1000):
+def testDeterminism(originalGraph, iterations=100, steps=1000):
   results = collections.Counter();
   for _ in range(iterations):
-    graph = FoodTravelGraph(emptyNodes, foodSources, antHills);
+    graph = originalGraph.makeCopy();
     for _ in range(steps):
       graph.step();
     results[graph.getOptimalPath()["hill1"]] += 1;
   return results;
 
-def plotAccuracyVsSteps(emptyNodes, foodSources, antHills):
+def plotAccuracyVsSteps(graph):
   accuracies = [];
   for steps in range(1, 100, 10):
-    results = testDeterminism(emptyNodes, foodSources, antHills, iterations=100, steps=steps);
+    results = testDeterminism(graph, steps=steps);
     accuracies.append(results[5.23606797749979]/100.0);
   print(accuracies);
 
@@ -255,12 +263,5 @@ if __name__ == "__main__":
     "hill1": {"pos": (-1, 3), "ants": 10}
   }
 
-  plotAccuracyVsSteps(emptyNodes, foodSources, antHills);
-
-  # results = collections.Counter();
-  # for _ in range(10):
-  #   temp = FoodTravelGraph(emptyNodes, foodSources, antHills);
-  #   for _ in range(1000):
-  #     temp.step();
-  #   results[temp.getOptimalPath()["hill1"]] += 1;
-  # print(results);
+  # plotAccuracyVsSteps(FoodTravelGraph(emptyNodes, foodSources, antHills));
+  sweep(FoodTravelGraph(emptyNodes, foodSources, antHills));
