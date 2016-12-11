@@ -86,9 +86,21 @@ Results: This algorithm had varying success rates in finding the shortest path b
 
 Running the simulation for a short time provides a reasonable increase in accuracy, and running the simulation for longer provides diminshing returns. The accuracy exceeds 75% within 200 steps and approaches 87% in longer simulations. 
 
-![sweep results](...)
+![sweep results](shortest-path-decay.png)
 
-The effectiveness of the solution varied based on pheromone strength, pheromone decay rate, and pheromone weight on agent pathfinding decisions. We found that stronger pheromones and pheromone weights led to a faster solution. However, increasing the pheromone weight too much reduced the ability of the agents to find the optimal solution, rather leading them to "lock in" on a sub-optimal solution. Additionally, a happy medium of pheromone decay was best for the simulation. Too little decay led to poor results, and too much decay limited the improvement of the solution over time.
+The effectiveness of the solution varied based on pheromone strength, pheromone decay rate, and pheromone weight on agent pathfinding decisions. We found that lower amounts of pheromone decay yielded the most accurate simulation results. At decay rates above 0.04 pheromones per step, the accuracy of the results dropped significantly.
+
+![sweep results](shortest-path-edge.png)
+
+Varying the base edge weight in ant decision making seemed to have little effect on the accuracy of the simulation as a whole.
+
+![sweep results](shortest-path-pstrength.png)
+
+Increasing the pheromone strength yielded a reduced accuracy with high strength pheromones.
+
+![sweep results](shortest-path-comparison.png)
+
+Testing different combinations of pheromone strength and edge weights, we found that very strong pheromones would decrease the accuracy of the results slightly for all edge weights, while weaker pheromones performed very similarly to each other.
 
 Interpretation: This algorithm is less efficient than something like Dijkstra's, but does provide an example of agent based modelling solving a traditional and well known problem. Theoretically, running the simulation repeatedly for a short time and then selecting the "best" answer from the different runs could provide a good estimation or perfect solution since about 25% of simulations were able to find the optimal solution within just a few time steps. In this situation, leveraging parallel processing could provide an improvement over other algorithms.
 
