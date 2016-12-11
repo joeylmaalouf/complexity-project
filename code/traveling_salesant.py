@@ -160,5 +160,10 @@ if __name__ == "__main__":
     print(r[0], r[1].generation, r[1].traveled, r[1].visited)
   # best result found:
   # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight, no decay
-  # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
+  # generation: 700
   # traveled: 139.053186595
+  # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
+
+# FEEDBACK:
+# find solved tsp, turn shortest distance upside down into accuracy (what % in generation reached point?)
+# plot decay vs no decay on same plot (also distance-based pheromone strength vs no?)
