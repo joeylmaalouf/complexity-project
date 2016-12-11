@@ -4,6 +4,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import collections
 
 def dist(p1, p2):
   """ Calculate the distance between two points. """
@@ -30,7 +31,7 @@ def dist(p1, p2):
     baseEdgeWeight -> Int: base weight of each edge before additional weighting by pheromones. Lower = stronger pheromones
 '''
 class FoodTravelGraph(nx.Graph):
-  def __init__(self, emptyNodes, foodSources, antHills, baseEdgeWeight=1):
+  def __init__(self, emptyNodes, foodSources, antHills, pheromoneStrength=1, baseEdgeWeight=1, pheromoneDecayRate=0.01):
     super(FoodTravelGraph, self).__init__();
     self.ants = [];
     self.frames = [];
@@ -38,6 +39,7 @@ class FoodTravelGraph(nx.Graph):
     self.emptyNodes = emptyNodes;
     self.foodSources = foodSources;
     self.antHills = antHills;
+    self.pheromoneDecayRate = pheromoneDecayRate;
 
     for node in emptyNodes:
       self.add_node(node, pos=emptyNodes[node], isFood=False);
@@ -48,7 +50,7 @@ class FoodTravelGraph(nx.Graph):
     for node in antHills:
       self.add_node(node, pos=antHills[node]["pos"], ants=antHills[node]["ants"], isFood=False);
       for ant in range(antHills[node]["ants"]):
-        self.ants.append(Ant(home=node, pos=node)); # create ant
+        self.ants.append(Ant(home=node, pos=node, pheromoneStrength=pheromoneStrength)); # create ant
 
     for hill in antHills:
       for node in emptyNodes:
@@ -89,7 +91,51 @@ class FoodTravelGraph(nx.Graph):
         if (self.node[dest]["isFood"]):
           ant.foundFood = True;
 
-    self.saveFrame();
+  '''
+    Get shortest path from each ant hill to food.
+
+    return -> Object<String, Number>
+              Map ant hill names to shortest path length
+  '''
+  def getOptimalPath(self):
+    paths = {};
+    for hill in antHills:
+      paths[hill] = self.getShortestPath(hill);
+    return paths;
+
+  '''
+    Get shortest path from node to food node by traversing edges with high amounts of pheromones.
+    Remembers the last visited node, and will not try to walk back to that node.
+    If no path exists, return -1
+
+    return -> Number: length of path
+  '''
+  def getShortestPath(self, node):
+    length = 0;
+    currNode = node;
+    prevNode = currNode;
+    visited = [currNode];
+    while (self.node[currNode]["isFood"] != True):
+      maxPheromones = 0;
+      # Choose the neighbor with the strongest pheromone trail leading to it
+      for n, edge in self[currNode].items():
+        if (n != prevNode):
+          if (edge["pheromones"] >= maxPheromones):
+            maxPheromones = edge["pheromones"];
+            chosenEdge = edge;
+            chosenNode = n;
+
+      # If the 'best' neighbor is one we have previously visited, we are in a loop
+      if (chosenNode in visited):
+        return -1;
+
+      # Move to the chosen neighbor
+      prevNode = currNode;
+      currNode = chosenNode;
+      visited.append(chosenNode);
+      length += chosenEdge["length"];
+
+    return length;
 
   '''
     Reduce amount of pheromones on each edge by fixed amount
@@ -97,7 +143,7 @@ class FoodTravelGraph(nx.Graph):
   def decayPheromones(self):
     for a, b in self.edges():
       if self.edge[a][b]["pheromones"] > 0:
-        self.edge[a][b]["pheromones"] -= .01;
+        self.edge[a][b]["pheromones"] = max(0, self.edge[a][b]["pheromones"] - self.pheromoneDecayRate);
 
   '''
     Choose the next unvisited node to visit from the neighbors of currNode.
@@ -130,10 +176,6 @@ class FoodTravelGraph(nx.Graph):
 
     return choice, self.edge[currNode][choice]["length"];
 
-  ''' Save pheromone levels of graph. '''
-  def saveFrame(self):
-    self.frames.append([self.edge[edge[0]][edge[1]]["pheromones"] for edge in self.edges()]);
-
   def draw(self):
     fig, ax = plt.subplots();
 
@@ -158,6 +200,46 @@ class FoodTravelGraph(nx.Graph):
     plt.axis([-2, 7, -1, 6]);
     plt.show();
 
+def Sweep():
+  for pheromoneDecayRate in range(1, 10):
+    for baseEdgeWeight in range(1, 10):
+      for pheromoneStrength in range(1, 10):
+        graph = FoodTravelGraph(
+          emptyNodes, 
+          foodSources, 
+          antHills, 
+          pheromoneStrength=pheromoneStrength, 
+          baseEdgeWeight=baseEdgeWeight, 
+          pheromoneDecayRate=(0.01 * pheromoneDecayRate));
+
+        for _ in range(1000):
+          graph.step();
+
+        print("Decay rate: " 
+          + str(.01* pheromoneDecayRate) 
+          + ". Base edge weight: "
+          + str(baseEdgeWeight)
+          + ". Pheromone strength: "
+          + str(pheromoneStrength)
+          + ". Path length: " 
+          + str(graph.getOptimalPath()["hill1"]));
+
+def testDeterminism(emptyNodes, foodSources, antHills, iterations=100, steps=1000):
+  results = collections.Counter();
+  for _ in range(iterations):
+    graph = FoodTravelGraph(emptyNodes, foodSources, antHills);
+    for _ in range(steps):
+      graph.step();
+    results[graph.getOptimalPath()["hill1"]] += 1;
+  return results;
+
+def plotAccuracyVsSteps(emptyNodes, foodSources, antHills):
+  accuracies = [];
+  for steps in range(1, 100, 10):
+    results = testDeterminism(emptyNodes, foodSources, antHills, iterations=100, steps=steps);
+    accuracies.append(results[5.23606797749979]/100.0);
+  print(accuracies);
+
 if __name__ == "__main__":
   emptyNodes = {
     1: (0, 0),
@@ -173,15 +255,12 @@ if __name__ == "__main__":
     "hill1": {"pos": (-1, 3), "ants": 10}
   }
 
-  graph = FoodTravelGraph(emptyNodes, foodSources, antHills);
+  plotAccuracyVsSteps(emptyNodes, foodSources, antHills);
 
-  for i in range(1000):
-    graph.step();
-
-  graph.draw();
-
-  # print("NODES");
-  # print(graph.nodes(data=True));
-  # print("EDGES");
-  # for edge in graph.edges(data=True):
-  #   print(edge)
+  # results = collections.Counter();
+  # for _ in range(10):
+  #   temp = FoodTravelGraph(emptyNodes, foodSources, antHills);
+  #   for _ in range(1000):
+  #     temp.step();
+  #   results[temp.getOptimalPath()["hill1"]] += 1;
+  # print(results);
