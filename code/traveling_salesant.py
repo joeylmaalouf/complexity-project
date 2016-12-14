@@ -103,7 +103,7 @@ class Ant(object):
       self.graph[self.visited[i]][self.visited[i + 1]]["pheromones"] += self.pher_weight / self.traveled
 
 
-def evaluate(generations, population, dist_weight, pher_weight, decay = False, decay_amount = 0.1):
+def evaluate(generations, population, dist_weight, pher_weight, decay = False, decay_amount = 0.025):
   """ Evaluate one instance of the algorithm. """
   cities = {
     "SEATTLE":        (-122.3321, 47.6062),
@@ -158,12 +158,7 @@ if __name__ == "__main__":
   # results = sorted(results.items(), key = lambda x: (x[1].traveled, x[1].generation))
   # for r in results:
   #   print(r[0], r[1].generation, r[1].traveled, r[1].visited)
-  ant = evaluate(1000, 1000, 5.0, 10.0, True)
+  ant = evaluate(2000, 2000, 5.0, 10.0)
   print(ant.generation)
   print(ant.traveled)
   print(ant.visited)
-  # best result found:
-  # parameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight, no decay
-  # generation: 700
-  # traveled: 139.053186595
-  # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]

@@ -51,7 +51,7 @@ Results: This solution was also able to find the optimal solution after a few tr
 
 We can see the effects of including pheromone decay in our model by comparing its results directly to those of the non-decaying model:
 
-![decay vs. normal](traveling-sales-ant-comparison.PNG)
+![decay vs. normal](...)
 
 ###### _Figure 4. ..._
 
