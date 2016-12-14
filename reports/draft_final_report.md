@@ -52,7 +52,7 @@ Results: We were able to successfully find the same route presented in the paper
 
 Here, we can see that each new generation of ants experiences diminishing returns as the simulation continues, with the shortest found distance improving sharply initially, then more slowly later on.
 
-![results](traveling-sales-ant.PNG)
+![results](traveling-sales-ant.png)
 
 We also swept through the different possible parameters to this model, those being the population size, number of generations to run, and the weights to apply to the pheromone strength and distance traveled when making a weighted random decision.
 
@@ -82,7 +82,7 @@ Methodology: We modeled the environment as a single source node connected to man
 
 Results: This algorithm had varying success rates in finding the shortest path between the hive node and food node depending on how long the simulation was run for.
 
-![results](shortest-path-results.PNG)
+![results](shortest-path-results.png)
 
 Running the simulation for a short time provides a reasonable increase in accuracy, and running the simulation for longer provides diminshing returns. The accuracy exceeds 75% within 200 steps and approaches 87% in longer simulations. 
 

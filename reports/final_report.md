@@ -16,7 +16,7 @@ We look at how ants gather food for the colony, using some combination of partic
 
 The travelling salesman problem involves multiple nodes in a complete connected graph, with each node representing a unique destination. The goal of the agent in this system is to traverse every node once and end up back at the starting node without revisiting any node. Bonabeau solves this with ant colony optimization, a type of algorithm that weights edges based on overall traversal time and bases the decisions of future agents based on  those weights, similar to ants and pheromones in the real world. 
 
-![example](usa_traversal.PNG)
+![example](usa_traversal.png)
 
 ###### _Figure 1. Example of optimal path solution found by experiment. Figure courtesy of Bonabeau and Théraulaz._
 
@@ -31,7 +31,7 @@ Methodology: We modeled the environment as a complete graph, and set the agents 
 
 Results: We were able to successfully find the same route presented in the paper whose experiment we replicated, which we assume to be the optimal route.
 
-![results](traveling-sales-ant.PNG)
+![results](traveling-sales-ant.png)
 
 ###### _Figure 2. Each new generation of ants experiences diminishing returns as the simulation continues, with the shortest found distance improving sharply initially, then more slowly later on._
 
@@ -51,7 +51,7 @@ Results: This solution was also able to find the optimal solution after a few tr
 
 We can see the effects of including pheromone decay in our model by comparing its results directly to those of the non-decaying model:
 
-![decay vs. normal](traveling-sales-ant-comparison.PNG)
+![decay vs. normal](traveling-sales-ant-comparison.png)
 
 ###### _Figure 4. ..._
 
@@ -65,7 +65,7 @@ Methodology: We modeled the environment as a single source node connected to man
 
 Results: This algorithm had varying success rates in finding the shortest path between the hive node and food node depending on how long the simulation was run for.
 
-![results](shortest-path-results.PNG)
+![results](shortest-path-results.png)
 
 ###### _Figure 5. Running the simulation for a short time provides a reasonable increase in accuracy, and running the simulation for longer provides diminshing returns. The accuracy exceeds 75% within 200 steps and approaches 87% in longer simulations._
 
