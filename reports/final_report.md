@@ -39,7 +39,7 @@ In order to optimize our model, we tested the reasonable range of parameter valu
 
 ![sweep results](sweep.png)
 
-###### _Figure 3. The results of the weight sweep show that the ideal combination is actually an even split between the weights for edge pheromones and node distance Too much emphasis on just the pheromones in particular can lead to suboptimal results._
+###### _Figure 3. The results of the weight sweep show that the ideal combination is actually an even split between the weights for edge pheromones and node distance. Too much emphasis on just the pheromones in particular can lead to suboptimal results._
 
 Interpretation: This technique found the optimal path, but not necessarily on the first try. This sort of approach can find a good solution very quickly, but may not find the optimal solution for a long time, depending on what sport of weight parameters are supplied. This problem of not always being able to find the right solution makes this model less reliable than deterministic algorithms, which will always either find the answer or not.
 
