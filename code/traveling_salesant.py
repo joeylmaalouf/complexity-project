@@ -144,26 +144,26 @@ def grid_search(hyperparam_ranges):
   """ Find the best hyperparameter combination. """
   runs = {}
   for p in [dict(izip(hyperparam_ranges, r)) for r in product(*hyperparam_ranges.values())]:
-    print(p)
+    # print(p)
     runs[tuple(p.values())] = evaluate(**p)
   return runs
 
 if __name__ == "__main__":
-  results = grid_search({
-    "generations": [100, 500, 1000, 1500, 2000],
-    "population": [100, 500, 1000, 1500, 2000],
-    "dist_weight": [1, 5, 10],
-    "pher_weight": [1, 5, 10]
-  })
-  results = sorted(results.items(), key = lambda x: (x[1].traveled, x[1].generation))
-  for r in results:
-    print(r[0], r[1].generation, r[1].traveled, r[1].visited)
+  # results = grid_search({
+  #   "generations": [100, 500, 1000, 1500, 2000],
+  #   "population": [100, 500, 1000, 1500, 2000],
+  #   "dist_weight": [1, 5, 10],
+  #   "pher_weight": [1, 5, 10]
+  # })
+  # results = sorted(results.items(), key = lambda x: (x[1].traveled, x[1].generation))
+  # for r in results:
+  #   print(r[0], r[1].generation, r[1].traveled, r[1].visited)
+  ant = evaluate(1000, 1000, 5.0, 10.0, True)
+  print(ant.generation)
+  print(ant.traveled)
+  print(ant.visited)
   # best result found:
-  # hyperparameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight, no decay
+  # parameters: 1000 generations, 1000 population, 5.0 dist_weight, 10.0 pher_weight, no decay
   # generation: 700
   # traveled: 139.053186595
   # visited: ["BOSTON", "MIAMI", "ATLANTA", "HOUSTON", "PHOENIX", "LAS VEGAS", "SAN DIEGO", "LOS ANGELES", "SAN FRANCISCO", "SEATTLE", "SALT LAKE CITY", "ALBUQUERQUE", "OKLAHOMA CITY", "INDIANAPOLIS", "NEW YORK", "BOSTON"]
-
-# FEEDBACK:
-# find solved tsp, turn shortest distance upside down into accuracy (what % in generation reached point?)
-# plot decay vs no decay on same plot (also distance-based pheromone strength vs no?)
