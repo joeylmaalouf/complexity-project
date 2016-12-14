@@ -35,11 +35,13 @@ Results: We were able to successfully find the same route presented in the paper
 
 ###### _Figure 2. Each new generation of ants experiences diminishing returns as the simulation continues, with the shortest found distance improving sharply initially, then more slowly later on._
 
-![sweep results](...)
+In order to optimize our model, we tested the reasonable range of parameter values for this model. These parameters are the population size, number of generations to run, and the weights to apply to the pheromone strength and distance traveled when making a weighted random decision. While it's fairly obvious that a larger population size and more generations both lead to better solutions, it's hard to guess what sort of weight ratio would be best.
 
-###### _Figure 3. In order to optimize our model, we tested the reasonable range of parameter values for this model. These parameters are the population size, number of generations to run, and the weights to apply to the pheromone strength and distance traveled when making a weighted random decision._
+![sweep results](sweep.png)
 
-Interpretation: This technique found the optimal path, but not necessarily on the first try. This sort of approach can find a good solution very quickly, but may not find the optimal solution for a long time. This problem of not always being able to find the right solution makes this model less reliable than deterministic algorithms, which will always either find the answer or not.
+###### _Figure 3. The results of the weight sweep show that the ideal combination is actually an even split between the weights for edge pheromones and node distance Too much emphasis on just the pheromones in particular can lead to suboptimal results._
+
+Interpretation: This technique found the optimal path, but not necessarily on the first try. This sort of approach can find a good solution very quickly, but may not find the optimal solution for a long time, depending on what sport of weight parameters are supplied. This problem of not always being able to find the right solution makes this model less reliable than deterministic algorithms, which will always either find the answer or not.
 
 ##### Decaying Travelling Sales-ant
 
