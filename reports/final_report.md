@@ -71,9 +71,11 @@ Results: This algorithm had varying success rates in finding the shortest path b
 
 ###### _Figure 5. Running the simulation for a short time provides a reasonable increase in accuracy, and running the simulation for longer provides diminshing returns. The accuracy exceeds 75% within 200 steps and approaches 87% in longer simulations._
 
+In order to optimize the efficiency of the algorithm, we benchmarked various configurations with different pheromone strengths, decay rates, and pheromone weight in pathfinding decisions. All configurations were run for 1000 steps.
+
 ![sweep results](shortest-path-decay.png)
 
-###### _Figure 6. The effectiveness of the solution varied based on pheromone strength, pheromone decay rate, and pheromone weight on agent pathfinding decisions. We found that lower amounts of pheromone decay yielded the most accurate simulation results. At decay rates above 0.04 pheromones per step, the accuracy of the results dropped significantly._
+###### _Figure 6. Lower amounts of pheromone decay yielded the most accurate simulation results. At decay rates above 0.04 pheromones per step, the accuracy of the results dropped significantly._
 
 ![sweep results](shortest-path-edge.png)
 
