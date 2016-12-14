@@ -53,7 +53,7 @@ We can see the effects of including pheromone decay in our model by comparing it
 
 ![decay vs. normal](traveling-sales-ant-comparison.png)
 
-###### _Figure 4. ..._
+###### _Figure 4. Modifying our model to add pheromone decay makes it approach the optimal solution more rapidly and reach it earlier._
 
 Interpretation: This modification seems to positively impact our algorithm, since ants don't get misled by outdated paths, while the good paths are constantly refreshed.
 
